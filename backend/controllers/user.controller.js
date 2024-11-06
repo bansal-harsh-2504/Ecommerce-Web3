@@ -8,7 +8,29 @@ const createToken = (id) => {
 };
 
 //Route for User Login
-export const loginUser = async (req, res) => {};
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ success: false, message: "User doesn't exists" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
+      const token = createToken(user._id);
+      res.json({ success: true, token });
+    } else {
+      res.json({ success: false, message: "Invalid credentials" });
+    }
+
+  } catch (error) {
+    console.log("Error in Login User Controller : ", error.message);
+    res.json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //Route for User Register
 export const registerUser = async (req, res) => {
@@ -47,7 +69,7 @@ export const registerUser = async (req, res) => {
 
     res.json({ success: true, message: "User registered successfully", token });
   } catch (error) {
-    console.log("Error in Register User Controller : ", error);
+    console.log("Error in Register User Controller : ", error.message);
     res.json({ success: false, message: "Internal Server Error" });
   }
 };
