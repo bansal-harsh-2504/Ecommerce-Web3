@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { backendUrl } from "../App";
 import axios from "axios";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState("");
@@ -10,19 +10,19 @@ const Login = ({ setToken }) => {
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
-      const res = await axios.post(backendUrl + "/api/user/admin", {
+      const res = await axios.post(`${backendUrl}/api/user/admin`, {
         email,
         password,
       });
       if (res.data.success) {
         setToken(res.data.token);
+        toast.success(res.data.message);
       } else {
         toast.error(res.data.message);
       }
-      toast.success(res.data.message);
     } catch (error) {
-      toast.error(error.message);
-      console.log("Error while logging in : " + error.message);
+      toast.error(error);
+      console.log("Error while logging in : " + error);
     }
   };
 
