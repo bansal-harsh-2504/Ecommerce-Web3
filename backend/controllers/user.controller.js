@@ -25,7 +25,6 @@ export const loginUser = async (req, res) => {
     } else {
       res.json({ success: false, message: "Invalid credentials" });
     }
-
   } catch (error) {
     console.log("Error in Login User Controller : ", error.message);
     res.json({ success: false, message: "Internal Server Error" });
@@ -75,4 +74,25 @@ export const registerUser = async (req, res) => {
 };
 
 //Route for Admin Login
-export const adminLogin = async (req, res) => {};
+export const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      res.json({
+        success: true,
+        message: "Admin Log In successfull.",
+        token,
+      });
+    } else {
+      res.json({ success: false, message: "Invalid credentials" });
+    }
+  } catch (error) {
+    console.log("Error in Login Admin Controller : ", error.message);
+    res.json({ success: false, message: "Internal Server Error" });
+  }
+};

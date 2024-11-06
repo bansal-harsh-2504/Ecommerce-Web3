@@ -72,10 +72,50 @@ export const addProduct = async (req, res) => {
 };
 
 //Route for listing all products
-export const listProducts = async (req, res) => {};
+export const listProducts = async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.json({
+      success: true,
+      message: "All products fetched successfully",
+      products,
+    });
+  } catch (error) {
+    console.log("Error in Listing Product Conltroller : ", error.message);
+    res.json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //Route for removing a product
-export const removeProduct = async (req, res) => {};
+export const removeProduct = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    await Product.findByIdAndDelete(productId);
+    res.json({
+      success: true,
+      message: "Product removed successfully",
+    });
+  } catch (error) {
+    console.log("Error in Removing Product Conltroller : ", error.message);
+    res.json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 //Route for single product info
-export const singleProduct = async (req, res) => {};
+export const singleProduct = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const product = await Product.findById(productId);
+    res.json({
+      success: true,
+      message: "Product info fetched successfully",
+      product,
+    });
+  } catch (error) {
+    console.log(
+      "Error in Fetching single product Conltroller : ",
+      error.message
+    );
+    res.json({ success: false, message: "Internal Server Error" });
+  }
+};
