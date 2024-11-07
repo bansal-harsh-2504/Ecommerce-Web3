@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+export const currency = "$";
 
 const App = () => {
   const [token, setToken] = useState(
