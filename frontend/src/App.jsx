@@ -10,10 +10,12 @@ import {
   PlaceOrder,
   Product,
 } from "./pages/export";
+import { Navbar } from "./components/export";
 
 const App = () => {
   return (
     <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+      <Navbar />
       <Routes>
         <Route path={"/"} element={<Home />} />
         <Route path={"/collection"} element={<Collection />} />
