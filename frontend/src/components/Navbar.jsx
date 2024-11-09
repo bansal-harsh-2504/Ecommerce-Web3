@@ -46,7 +46,56 @@ const Navbar = () => {
             10
           </p>
         </Link>
-        <img onClick={()=>setVisible(true)} src={assets.menu_icon} className="w-5 cursor-pointer sm:hidden" />
+        <img
+          onClick={() => setVisible(true)}
+          src={assets.menu_icon}
+          className="w-5 cursor-pointer sm:hidden"
+        />
+      </div>
+
+      {/* Sidebar for small screens */}
+      <div
+        className={`absolute top-0 bottom-0 right-0 overflow-hidden bg-white transition-all ${
+          visible ? "w-full" : "w-0"
+        }`}
+      >
+        <div className="flex flex-col text-gray-600">
+          <div
+            onClick={() => setVisible(false)}
+            className="flex items-center gap-4 p-3 cursor-pointer"
+          >
+            <img src={assets.dropdown_icon} className="h-4 rotate-180" />
+            <p>Back</p>
+          </div>
+          <NavLink
+            to="/"
+            className="pl-6 py-2 border"
+            onClick={() => setVisible(false)}
+          >
+            <p>HOME</p>
+          </NavLink>
+          <NavLink
+            to="/collection"
+            className="pl-6 py-2 border"
+            onClick={() => setVisible(false)}
+          >
+            <p>COLLECTION</p>
+          </NavLink>
+          <NavLink
+            to="/about"
+            className="pl-6 py-2 border"
+            onClick={() => setVisible(false)}
+          >
+            <p>ABOUT</p>
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className="pl-6 py-2 border"
+            onClick={() => setVisible(false)}
+          >
+            <p>CONTACT</p>
+          </NavLink>
+        </div>
       </div>
     </div>
   );
