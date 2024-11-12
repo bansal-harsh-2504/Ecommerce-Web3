@@ -12,12 +12,14 @@ const Navbar = () => {
     setLoggedIn,
     navigate,
     setToken,
+    setCartItems,
   } = useContext(ShopContext);
 
   const handleLogout = () => {
     setLoggedIn(false);
     setToken("");
     localStorage.removeItem("token");
+    setCartItems({});
     navigate("/login");
   };
 
@@ -56,11 +58,7 @@ const Navbar = () => {
           <img
             src={assets.profile_icon}
             className="w-5 cursor-pointer"
-            onClick={() => {
-              if (!loggedIn) {
-                navigate("/login");
-              }
-            }}
+            onClick={() => (loggedIn ? null : navigate("/login"))}
           />
           {loggedIn && (
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
