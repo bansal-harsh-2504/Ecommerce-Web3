@@ -22,14 +22,14 @@ const List = ({ token }) => {
 
   const removeProduct = async (id) => {
     try {
-      const res = await axios.get(
+      const res = await axios.post(
         backendUrl + "/api/product/remove",
-        { id },
+        { productId: id },
         { headers: { token } }
       );
       if (res.data.success) {
-        fetchList();
         toast.success(res.data.message);
+        fetchList();
       } else {
         toast.error(res.data.message);
       }

@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/product.model.js";
+import mongoose from "mongoose";
 
 //Route for adding a product
 export const addProduct = async (req, res) => {
@@ -90,6 +91,22 @@ export const listProducts = async (req, res) => {
 export const removeProduct = async (req, res) => {
   try {
     const { productId } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
     await Product.findByIdAndDelete(productId);
     res.json({
       success: true,

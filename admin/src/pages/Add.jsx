@@ -18,9 +18,26 @@ const Add = ({ token }) => {
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
 
+  const validateInputs = () => {
+    if (
+      name == "" ||
+      description == "" ||
+      price == "" ||
+      sizes.length == 0 ||
+      (!image1 && !image2 && !image3 && !image4)
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
+      if (!validateInputs()) {
+        toast.error("Input fields can not be empty");
+        return;
+      }
       const formData = new FormData();
 
       formData.append("name", name);
@@ -37,7 +54,7 @@ const Add = ({ token }) => {
       image4 && formData.append("image4", image4);
 
       const res = await axios.post(`${backendUrl}/api/product/add`, formData, {
-        headers: token,
+        headers: { token },
       });
 
       if (res.data.success) {
@@ -187,91 +204,26 @@ const Add = ({ token }) => {
       <div>
         <p className="mb-2">Product Sizes</p>
         <div className="flex gap-3">
-          <div
-            onClick={() =>
-              setSizes((prev) =>
-                prev.includes("S")
-                  ? prev.filter((item) => item !== "S")
-                  : [...prev, "S"]
-              )
-            }
-          >
-            <p
-              className={`bg-slate-200 px-3 py-1 cursor-pointer ${
-                sizes.includes("S") ? "bg-pink-100" : "bg-slate-200"
-              }`}
+          {["S", "M", "L", "XL", "XXL"].map((size) => (
+            <div
+              key={size}
+              onClick={() =>
+                setSizes((prevSizes) =>
+                  prevSizes.includes(size)
+                    ? prevSizes.filter((s) => s !== size)
+                    : [...prevSizes, size]
+                )
+              }
             >
-              S
-            </p>
-          </div>
-          <div
-            onClick={() =>
-              setSizes((prev) =>
-                prev.includes("M")
-                  ? prev.filter((item) => item !== "M")
-                  : [...prev, "M"]
-              )
-            }
-          >
-            <p
-              className={`bg-slate-200 px-3 py-1 cursor-pointer ${
-                sizes.includes("M") ? "bg-pink-100" : "bg-slate-200"
-              }`}
-            >
-              M
-            </p>
-          </div>
-          <div
-            onClick={() =>
-              setSizes((prev) =>
-                prev.includes("L")
-                  ? prev.filter((item) => item !== "L")
-                  : [...prev, "L"]
-              )
-            }
-          >
-            <p
-              className={`bg-slate-200 px-3 py-1 cursor-pointer ${
-                sizes.includes("L") ? "bg-pink-100" : "bg-slate-200"
-              }`}
-            >
-              L
-            </p>
-          </div>
-          <div
-            onClick={() =>
-              setSizes((prev) =>
-                prev.includes("XL")
-                  ? prev.filter((item) => item !== "XL")
-                  : [...prev, "XL"]
-              )
-            }
-          >
-            <p
-              className={`px-3 py-1 cursor-pointer ${
-                sizes.includes("XL") ? "bg-pink-100" : "bg-slate-200"
-              }`}
-            >
-              XL
-            </p>
-          </div>
-          <div
-            onClick={() =>
-              setSizes((prev) =>
-                prev.includes("XXL")
-                  ? prev.filter((item) => item !== "XXL")
-                  : [...prev, "XXL"]
-              )
-            }
-          >
-            <p
-              className={`bg-slate-200 px-3 py-1 cursor-pointer ${
-                sizes.includes("XXL") ? "bg-pink-100" : "bg-slate-200"
-              }`}
-            >
-              XXL
-            </p>
-          </div>
+              <p
+                className={`px-3 py-1 cursor-pointer ${
+                  sizes.includes(size) ? "bg-pink-100" : "bg-slate-200"
+                }`}
+              >
+                {size}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
