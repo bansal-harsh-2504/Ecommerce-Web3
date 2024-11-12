@@ -1,10 +1,60 @@
-import React, { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ShopContext } from "../context/ShopContext";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const Login = () => {
-  const [currentState, setCurrentState] = useState("Sign Up");
+  const [currentState, setCurrentState] = useState("Login");
+  const { token, setToken, navigate, backendUrl, loggedIn, setLoggedIn } =
+    useContext(ShopContext);
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
+    try {
+      const res = await axios.post(
+        backendUrl +
+          `/api/user/${currentState === "Sign Up" ? "register" : "login"}`,
+        { name, email, password }
+      );
+
+      if (res.data.success) {
+        toast.success(res.data.message);
+        resetFields();
+        setToken(res.data.token);
+        localStorage.setItem("token", res.data.token);
+        setLoggedIn(true);
+        navigate("/");
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log("Error in Login.jsx : ", error.message);
+    }
   };
+
+  const resetFields = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+  };
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate("/");
+    }
+    resetFields();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   return (
     <form
@@ -20,6 +70,8 @@ const Login = () => {
       ) : (
         <input
           type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="w-full px-3 py-2 border border-gray-800"
           placeholder="Name"
           required
@@ -27,12 +79,16 @@ const Login = () => {
       )}
       <input
         type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Email"
         required
       />
       <input
         type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Password"
         required
@@ -46,14 +102,20 @@ const Login = () => {
         {currentState === "Login" ? (
           <p
             className="cursor-pointer"
-            onClick={() => setCurrentState("Sign Up")}
+            onClick={() => {
+              resetFields();
+              setCurrentState("Sign Up");
+            }}
           >
             Create Account
           </p>
         ) : (
           <p
             className="cursor-pointer"
-            onClick={() => setCurrentState("Login")}
+            onClick={() => {
+              resetFields();
+              setCurrentState("Login");
+            }}
           >
             Login Here
           </p>
