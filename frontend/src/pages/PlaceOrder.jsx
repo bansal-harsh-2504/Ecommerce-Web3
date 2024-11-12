@@ -1,16 +1,99 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
-import { assets } from "../assets/assets";
+import { assets, products } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("cod");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    country: "",
+    phone: "",
+  });
+  const {
+    navigate,
+    cartItems,
+    delivery_fee,
+    getCartAmount,
+    backendUrl,
+    token,
+    setCartItems,
+  } = useContext(ShopContext);
 
-  const { navigate } = useContext(ShopContext);
+  const onChangeHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      let orderItems = [];
+      for (const items in cartItems) {
+        for (const item in cartItems[items]) {
+          if (cartItems[items][item] > 0) {
+            const itemInfo = structuredClone(
+              products.find((product) => product._id == items)
+            );
+
+            if (itemInfo) {
+              itemInfo.size = item;
+              itemInfo.quantity = cartItems[items][item];
+              orderItems.push(itemInfo);
+            }
+          }
+        }
+      }
+
+      let orderData = {
+        address: formData,
+        items: orderItems,
+        amount: getCartAmount() + delivery_fee,
+      };
+
+      switch (method) {
+        case "cod":
+          {
+            const res = await axios.post(
+              backendUrl + "/api/order/place",
+              orderData,
+              { headers: { token } }
+            );
+            console.log(res);
+            if (res.data.success) {
+              setCartItems({});
+              navigate("/orders");
+            } else {
+              toast.error(res.data.message);
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error.message);
+    }
+  };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t">
+    <form
+      onSubmit={onSubmitHandler}
+      className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t"
+    >
       {/* Left Side */}
       <div className="flex flex-col w-full sm:max-w-[480px] gap-4">
         <div className="text-xl sm:text-2xl my-3">
@@ -18,53 +101,89 @@ const PlaceOrder = () => {
         </div>
         <div className="flex gap-3">
           <input
+            required
             type="text"
             placeholder="First name"
+            onChange={onChangeHandler}
+            name="firstName"
+            value={formData.firstName}
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
           />
           <input
+            required
             type="text"
             placeholder="Last name"
+            onChange={onChangeHandler}
+            name="lastName"
+            value={formData.lastName}
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
           />
         </div>
         <input
+          required
           type="email"
+          onChange={onChangeHandler}
+          name="email"
+          value={formData.email}
           placeholder="Email Address"
           className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
         />
         <input
+          required
           type="text"
+          onChange={onChangeHandler}
+          name="street"
+          value={formData.street}
           placeholder="Street"
           className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
         />
         <div className="flex gap-3">
           <input
+            required
             type="text"
             placeholder="City"
+            onChange={onChangeHandler}
+            name="city"
+            value={formData.city}
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
           />
           <input
+            required
             type="text"
             placeholder="State"
+            onChange={onChangeHandler}
+            name="state"
+            value={formData.state}
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
           />
         </div>
         <div className="flex gap-3">
           <input
+            required
             type="number"
             placeholder="Zipcode"
+            onChange={onChangeHandler}
+            name="zipcode"
+            value={formData.zipcode}
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
           />
           <input
+            required
             type="text"
             placeholder="Country"
+            onChange={onChangeHandler}
+            name="country"
+            value={formData.country}
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
           />
         </div>
         <input
+          required
           type="number"
           placeholder="Phone"
+          onChange={onChangeHandler}
+          name="phone"
+          value={formData.phone}
           className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
         />
       </div>
@@ -118,14 +237,14 @@ const PlaceOrder = () => {
           <div className="w-full text-end mt-8">
             <button
               className="bg-black text-white px-16 py-3 text-sm"
-              onClick={() => navigate("/orders")}
+              type="submit"
             >
               PLACE ORDER
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
