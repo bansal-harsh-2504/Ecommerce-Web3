@@ -22,8 +22,7 @@ const About = () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
             commodi ipsum odit ullam optio deleniti iure id, animi illum eveniet
             vitae praesentium tempora, eaque corrupti amet incidunt sequi, ipsam
-            molestias quae. Quas distinctio suscipit nobis sunt assumenda
-            deleniti repellat quia est accusantium nihil, veniam .
+            molestias quae. Quas distinctio suscipit nobis sunt.
           </p>
           <b className="text-gray-800">Our Mission</b>
           <p>
