@@ -146,6 +146,7 @@ const ShopContextProvider = (props) => {
     if (!token && localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
       getUserCart(localStorage.getItem("token"));
+      setLoggedIn(true);
     }
   });
 
