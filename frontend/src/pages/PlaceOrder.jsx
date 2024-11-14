@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
@@ -57,11 +57,10 @@ const PlaceOrder = () => {
           }
         }
       }
-      console.log("orderItems: ", cartItems);
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee,
+        amount: Number(delivery_fee) + getCartAmount(),
       };
 
       switch (method) {
@@ -72,10 +71,25 @@ const PlaceOrder = () => {
               orderData,
               { headers: { token } }
             );
-            console.log(res);
             if (res.data.success) {
               setCartItems({});
               navigate("/orders");
+            } else {
+              toast.error(res.data.message);
+            }
+          }
+          break;
+        case "stripe":
+          {
+            const res = await axios.post(
+              backendUrl + "/api/order/stripe",
+              orderData,
+              { headers: { token } }
+            );
+            if (res.data.success) {
+              setCartItems({});
+              const { session_url } = res.data;
+              window.location.replace(session_url);
             } else {
               toast.error(res.data.message);
             }

@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
+import toast from "react-hot-toast";
 
 const Cart = () => {
   const { products, currency, cartItems, updateQuantity, navigate } =
@@ -93,7 +94,11 @@ const Cart = () => {
           <div className="w-full text-end">
             <button
               className="bg-black text-white text-sm my-8 px-8 py-3"
-              onClick={() => navigate("/place-order")}
+              onClick={() => {
+                cartData.length > 0
+                  ? navigate("/place-order")
+                  : toast.error("Cart is empty");
+              }}
             >
               PROCEED TO CHECKOUT
             </button>

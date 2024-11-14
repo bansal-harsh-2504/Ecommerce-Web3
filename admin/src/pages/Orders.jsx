@@ -52,9 +52,6 @@ const Orders = ({ token }) => {
   useEffect(() => {
     fetchAllOrders();
   }, [token]);
-  // useEffect(() => {
-  //   console.log(orders)
-  // }, [orders]);
 
   return (
     <div>

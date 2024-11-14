@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
-  const currency = "₹";
-  const delivery_fee = 10;
+  const currency = import.meta.env.VITE_CURRENCY;
+  const delivery_fee = import.meta.env.VITE_DELIVERY_FEE;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);

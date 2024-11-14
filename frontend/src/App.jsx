@@ -14,6 +14,7 @@ import { Navbar } from "./components/export";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import { Toaster } from "react-hot-toast";
+import Verify from "./pages/Verify";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path={"/login"} element={<Login />} />
         <Route path={"/place-order"} element={<PlaceOrder />} />
         <Route path={"/orders"} element={<Orders />} />
+        <Route path={"/verify"} element={<Verify />} />
       </Routes>
       <Footer />
       <Toaster position="bottom-right" />
