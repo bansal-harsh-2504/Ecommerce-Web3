@@ -58,6 +58,13 @@ export const placeOrderRazorpay = async (req, res) => {
 // All Orders data for admin panel
 export const allOrders = async (req, res) => {
   try {
+    const orders = await Order.find({});
+
+    res.json({
+      success: true,
+      message: "fetched all orders for admin panel",
+      orders,
+    });
   } catch (error) {
     console.log("Error in all orders for admin controller : ", error.message);
     res.json({
@@ -85,6 +92,12 @@ export const userOrders = async (req, res) => {
 //Update Order Status from admin panel
 export const updateStatus = async (req, res) => {
   try {
+    const { orderId, status } = req.body;
+    await Order.findByIdAndUpdate(orderId, { status });
+    res.json({
+      success: true,
+      message: "Status updated",
+    });
   } catch (error) {
     console.log("Error in update order status controller : ", error.message);
     res.json({

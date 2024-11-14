@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
-import { assets, products } from "../assets/assets";
+import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -27,6 +27,7 @@ const PlaceOrder = () => {
     backendUrl,
     token,
     setCartItems,
+    products,
   } = useContext(ShopContext);
 
   const onChangeHandler = (e) => {
@@ -56,7 +57,7 @@ const PlaceOrder = () => {
           }
         }
       }
-
+      console.log("orderItems: ", cartItems);
       let orderData = {
         address: formData,
         items: orderItems,
