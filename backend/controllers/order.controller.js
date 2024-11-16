@@ -1,6 +1,7 @@
 import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Stripe from "stripe";
+import razorpay from "razorpay";
 
 //gloabl variables
 const currency = process.env.CURRENCY;
@@ -8,6 +9,10 @@ const deliveryCharge = process.env.DELIVERY_CHARGE;
 
 //gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const razorpayInstance = new razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 //COD orders
 export const placeOrder = async (req, res) => {
@@ -123,8 +128,65 @@ export const verifyStripe = async (req, res) => {
 //Place Razorpay Order
 export const placeOrderRazorpay = async (req, res) => {
   try {
+    const { userId, items, amount, address } = req.body;
+
+    const orderData = {
+      userId,
+      items,
+      address,
+      amount,
+      paymentMethod: "Razorpay",
+      payment: false,
+      date: Date.now(),
+    };
+
+    const newOrder = new Order(orderData);
+    await newOrder.save();
+
+    const options = {
+      amount: amount * 100,
+      currency: currency.toUpperCase(),
+      receipt: newOrder._id.toString(),
+    };
+
+    await razorpayInstance.orders.create(options, (error, order) => {
+      if (error) {
+        console.log(error);
+        return res.json({ success: false, message: error });
+      }
+      return res.json({
+        success: true,
+        message: "Order placed successfully",
+        order,
+      });
+    });
   } catch (error) {
     console.log("Error in razorpay order controller : ", error.message);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+//Verify Razorpay payment
+export const verifyRazorpay = async (req, res) => {
+  try {
+    const { userId, razorpay_order_id } = req.body;
+    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
+
+    if (orderInfo.status === "paid") {
+      await Order.findByIdAndUpdate(orderInfo.receipt, { payment: true });
+      await User.findByIdAndUpdate(userId, { cartData: {} });
+      res.json({ success: true, message: "Payment Successfull" });
+    } else {
+      res.json({ success: false, message: "Payment Failed" });
+    }
+  } catch (error) {
+    console.log(
+      "Error in verify razorpay payment controller : ",
+      error.message
+    );
     res.json({
       success: false,
       message: error.message,
