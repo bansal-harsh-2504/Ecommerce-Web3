@@ -9,10 +9,10 @@ const deliveryCharge = process.env.DELIVERY_CHARGE;
 
 //gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const razorpayInstance = new razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// const razorpayInstance = new razorpay({
+//   key_id: process.env.RAZORPAY_KEY_ID,
+//   key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
 
 //COD orders
 export const placeOrder = async (req, res) => {
@@ -126,6 +126,7 @@ export const verifyStripe = async (req, res) => {
 };
 
 //Place Razorpay Order
+/*
 export const placeOrderRazorpay = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
@@ -193,6 +194,7 @@ export const verifyRazorpay = async (req, res) => {
     });
   }
 };
+*/
 
 // All Orders data for admin panel
 export const allOrders = async (req, res) => {
