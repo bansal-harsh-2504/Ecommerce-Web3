@@ -16,6 +16,7 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState("");
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [active, setActive] = useState(false);
 
   const addToCart = async (itemId, size) => {
     if (!size) {
@@ -35,20 +36,30 @@ const ShopContextProvider = (props) => {
       cartData[itemId] = {};
       cartData[itemId][size] = 1;
     }
-    toast.success("Item added to cart.");
-    setCartItems(cartData);
 
     if (token) {
       try {
-        await axios.post(
+        const res = await axios.post(
           backendUrl + "/api/cart/add",
           { itemId, size },
           { headers: { token } }
         );
+        if (res.data.success) {
+          setActive(true);
+          setTimeout(() => {
+            setActive(false);
+          }, 7000);
+          setCartItems(cartData);
+          toast.success("Item added to cart.");
+        } else {
+          toast.error(res.data.message);
+        }
       } catch (error) {
         toast.error(error.message);
         console.log("Error while adding to cart : ", error.message);
       }
+    } else {
+      toast.error("Login required.");
     }
   };
 
@@ -73,8 +84,6 @@ const ShopContextProvider = (props) => {
 
     cartData[itemId][size] = quantity;
 
-    setCartItems(cartData);
-
     if (token) {
       try {
         const res = await axios.post(
@@ -85,6 +94,8 @@ const ShopContextProvider = (props) => {
 
         if (!res.data.success) {
           toast.error(res.data.message);
+        } else {
+          setCartItems(cartData);
         }
       } catch (error) {
         console.log(error.message);
@@ -170,6 +181,8 @@ const ShopContextProvider = (props) => {
     token,
     loggedIn,
     setLoggedIn,
+    active,
+    setActive,
   };
 
   return (
