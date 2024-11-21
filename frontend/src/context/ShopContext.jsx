@@ -17,6 +17,7 @@ const ShopContextProvider = (props) => {
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
   const [active, setActive] = useState(false);
+  const [rewardPoints, setRewardPoints] = useState(0);
 
   const addToCart = async (itemId, size) => {
     if (!size) {
@@ -149,8 +150,41 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  const getRewardPoints = async () => {
+    try {
+      const res = await axios.get(backendUrl + "/api/reward");
+      if (res.data.success) {
+        setRewardPoints(res.data.rewardPoints);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log("Error getting Reward points : ", error.message);
+    }
+  };
+
+  const updateRewardPoints = async (quantity) => {
+    try {
+      const res = await axios.post(
+        backendUrl + "/api/reward/update",
+        { addPoints: quantity },
+        { headers: { token } }
+      );
+      if (res.data.success) {
+        setRewardPoints(res.data.rewardPoints);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log("Error updating reward points : ", error.message);
+    }
+  };
+
   useEffect(() => {
     getProductsData();
+    getRewardPoints();
   }, []);
 
   useEffect(() => {
@@ -183,6 +217,10 @@ const ShopContextProvider = (props) => {
     setLoggedIn,
     active,
     setActive,
+    rewardPoints,
+    setRewardPoints,
+    getRewardPoints,
+    updateRewardPoints,
   };
 
   return (

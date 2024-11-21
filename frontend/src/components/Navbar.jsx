@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import { NavLink, Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
@@ -13,6 +13,8 @@ const Navbar = () => {
     navigate,
     setToken,
     setCartItems,
+    rewardPoints,
+    getRewardPoints,
   } = useContext(ShopContext);
 
   const handleLogout = () => {
@@ -22,6 +24,10 @@ const Navbar = () => {
     setCartItems({});
     navigate("/login");
   };
+
+  useEffect(() => {
+    getRewardPoints();
+  }, [rewardPoints]);
 
   return (
     <div className="flex items-center justify-between py-5 font-medium">
@@ -67,6 +73,7 @@ const Navbar = () => {
                 <Link to={"/orders"}>
                   <p className="cursor-pointer hover:text-black">Orders</p>
                 </Link>
+                <p>Rewards: {rewardPoints}</p>
                 <p
                   onClick={handleLogout}
                   className="cursor-pointer hover:text-black"
