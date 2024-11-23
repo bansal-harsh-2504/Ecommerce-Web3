@@ -25,7 +25,7 @@ export const updateRewardPoints = async (req, res) => {
     res.json({
       success: true,
       message: "Updated rewards successfully.",
-      rewards: user.rewardPoints,
+      rewardPoints: user.rewardPoints,
     });
   } catch (error) {
     console.log("Error in updating rewards Conltroller : ", error.message);

@@ -23,7 +23,6 @@ const PlaceOrder = () => {
     phone: "",
   });
   const {
-    navigate,
     cartItems,
     delivery_fee,
     getCartAmount,
@@ -31,7 +30,6 @@ const PlaceOrder = () => {
     token,
     setCartItems,
     products,
-    setRewardPoints,
     updateRewardPoints,
   } = useContext(ShopContext);
 
@@ -61,7 +59,6 @@ const PlaceOrder = () => {
 
           if (data.success) {
             updateRewardPoints(100);
-            setRewardPoints((prev) => prev + 100);
             setPaymentMethod("Razorpay");
             setIsModalOpen(true);
             setCartItems({});
@@ -113,7 +110,6 @@ const PlaceOrder = () => {
             if (res.data.success) {
               setCartItems({});
               updateRewardPoints(100);
-              setRewardPoints((prev) => prev + 100);
               setPaymentMethod("Cash on delivey");
               setIsModalOpen(true);
             } else {
@@ -131,7 +127,6 @@ const PlaceOrder = () => {
             if (res.data.success) {
               setCartItems({});
               updateRewardPoints(100);
-              setRewardPoints((prev) => prev + 100);
               const { session_url } = res.data;
               window.location.replace(session_url);
             } else {
