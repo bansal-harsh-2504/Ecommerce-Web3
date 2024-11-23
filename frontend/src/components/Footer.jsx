@@ -7,9 +7,9 @@ const Footer = () => {
         <div>
           <img src={assets.logo} className="mb-5 w-32" alt="" />
           <p className="w-full md:w-2/3 text-gray-600">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam modi
-            architecto perferendis. Quia, corporis voluptates a facilis aperiam
-            minima sit!
+            Explore quality fashion for men, women, and kids. Shop with
+            confidence and enjoy unbeatable style, comfort, and convenience
+            every step of the way.
           </p>
         </div>
 
@@ -38,7 +38,6 @@ const Footer = () => {
           Copyright 2024@ bazaar.com - All rights Reserved.
         </p>
       </div>
-      
     </div>
   );
 };
