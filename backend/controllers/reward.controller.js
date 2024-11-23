@@ -3,11 +3,11 @@ import User from "../models/user.model.js";
 export const getRewardPoints = async (req, res) => {
   try {
     const { userId } = req.body;
-    const user = User.findById(userId);
+    const user = await User.findById(userId);
     res.json({
       success: true,
       message: "Rewards fetched successfully",
-      rewards: user.rewardPoints,
+      rewardPoints: user.rewardPoints,
     });
   } catch (error) {
     console.log("Error in getting rewards Conltroller : ", error.message);
@@ -18,9 +18,8 @@ export const getRewardPoints = async (req, res) => {
 export const updateRewardPoints = async (req, res) => {
   try {
     const { userId, addPoints } = req.body;
-    const user = User.findById(userId);
-    user.rewardPoints += addPoints;
-
+    const user = await User.findById(userId);
+    user.rewardPoints = user.rewardPoints + addPoints;
     await user.save();
 
     res.json({

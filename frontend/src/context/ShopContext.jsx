@@ -13,7 +13,7 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(null);
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
   const [active, setActive] = useState(false);
@@ -152,7 +152,9 @@ const ShopContextProvider = (props) => {
 
   const getRewardPoints = async () => {
     try {
-      const res = await axios.get(backendUrl + "/api/reward");
+      const res = await axios.get(backendUrl + "/api/reward/get", {
+        headers: { token },
+      });
       if (res.data.success) {
         setRewardPoints(res.data.rewardPoints);
       } else {
@@ -183,17 +185,20 @@ const ShopContextProvider = (props) => {
   };
 
   useEffect(() => {
-    getProductsData();
-    getRewardPoints();
-  }, []);
-
-  useEffect(() => {
     if (!token && localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
       getUserCart(localStorage.getItem("token"));
       setLoggedIn(true);
     }
-  });
+  }, []);
+  
+  useEffect(() => {
+    if (token) {
+      getProductsData();
+      getRewardPoints();
+      getCartCount();
+    }
+  }, [token]);
 
   const value = {
     products,
