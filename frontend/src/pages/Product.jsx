@@ -8,7 +8,7 @@ import ReactConfetti from "react-confetti";
 const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart, active } = useContext(ShopContext);
-  const [productData, setProductData] = useState(false);
+  const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [windowDimension, setWindowDimension] = useState({
@@ -17,6 +17,7 @@ const Product = () => {
   });
 
   const fetchProductData = async () => {
+    if (!products || products.length === 0) return;
     products.map((item) => {
       if (item._id === productId) {
         setProductData(item);
@@ -42,7 +43,11 @@ const Product = () => {
 
   useEffect(() => {
     fetchProductData();
-  }, [productId]);
+  }, [productId, products]);
+
+  if (!productData) {
+    return <div className="text-center py-10">Loading product details...</div>;
+  }
 
   return productId ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
