@@ -5,7 +5,7 @@ import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import toast from "react-hot-toast";
 import axios from "axios";
-import Popuop from "../components/Popup";
+import Popup from "../components/Popup";
 
 const PlaceOrder = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -318,7 +318,7 @@ const PlaceOrder = () => {
           </div>
         </div>
       </form>
-      <Popuop
+      <Popup
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         method={paymentMethod}
