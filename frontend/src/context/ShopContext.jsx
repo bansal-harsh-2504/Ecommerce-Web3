@@ -193,8 +193,8 @@ const ShopContextProvider = (props) => {
   }, []);
   
   useEffect(() => {
+    getProductsData();
     if (token) {
-      getProductsData();
       getRewardPoints();
       getCartCount();
     }
